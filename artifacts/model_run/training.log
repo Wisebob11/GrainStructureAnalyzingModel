@@ -1,0 +1,4 @@
+Epoch 01 | train loss 0.6138 | train acc 0.5239 | train macro F1 0.4340 | val loss 0.6641 | val acc 0.5752 | val bal acc 0.5387 | val macro F1 0.5329 | val weighted F1 0.5864
+Epoch 02 | train loss 0.5580 | train acc 0.5959 | train macro F1 0.5378 | val loss 0.7197 | val acc 0.5000 | val bal acc 0.5906 | val macro F1 0.4999 | val weighted F1 0.4974
+Epoch 03 | train loss 0.5608 | train acc 0.6257 | train macro F1 0.5955 | val loss 0.6402 | val acc 0.6283 | val bal acc 0.6126 | val macro F1 0.5981 | val weighted F1 0.6400
+Epoch 04 | train loss 0.5226 | train acc 0.6468 | train macro F1 0.6017 | val loss 0.6429 | val acc 0.6283 | val bal acc 0.6363 | val macro F1 0.6092 | val weighted F1 0.6421

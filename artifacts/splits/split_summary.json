@@ -1,0 +1,48 @@
+{
+  "class_counts": {
+    "test": {
+      "columnar": 373,
+      "equiaxed": 229
+    },
+    "train": {
+      "columnar": 883,
+      "equiaxed": 394
+    },
+    "val": {
+      "columnar": 156,
+      "equiaxed": 70
+    }
+  },
+  "counts": {
+    "all": 2105,
+    "test": 602,
+    "train": 1277,
+    "val": 226
+  },
+  "dataset_root": "/Users/sankeerth/Documents/GitHub/GrainStructureAnalyzingModel/Dataset",
+  "image_root": "/Users/sankeerth/Documents/GitHub/GrainStructureAnalyzingModel/Dataset/grain_crops",
+  "metadata_csv": "/Users/sankeerth/Documents/GitHub/GrainStructureAnalyzingModel/Dataset/all_grains.csv",
+  "seed": 42,
+  "source_counts": {
+    "test": {
+      "Dr.Lu_Grain_Structure_Image": 602
+    },
+    "train": {
+      "Area_1_1_IPF_A1.tiff": 1277
+    },
+    "val": {
+      "Area_1_1_IPF_A1.tiff": 226
+    }
+  },
+  "source_prefixes": {
+    "Area_1_1_IPF_A1.tiff": "Area_1_1",
+    "Dr.Lu_Grain_Structure_Image": "DrLu"
+  },
+  "test_sources": [
+    "Dr.Lu_Grain_Structure_Image"
+  ],
+  "train_sources": [
+    "Area_1_1_IPF_A1.tiff"
+  ],
+  "val_fraction": 0.15
+}

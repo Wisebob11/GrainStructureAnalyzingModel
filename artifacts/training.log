@@ -1,0 +1,4 @@
+  File "/Users/sankeerth/Documents/GitHub/GrainStructureAnalyzingModel/morphology_cnn/train_cnn.py", line 110
+    try:
+        ^
+IndentationError: unindent does not match any outer indentation level
