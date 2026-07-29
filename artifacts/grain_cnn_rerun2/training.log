@@ -1,0 +1,96 @@
+GrainCNN summary
+Input shape: (1, 3, 256, 256)
+Total parameters: 648,929
+Trainable parameters: 648,929
+
+GrainCNN(
+  (features): Sequential(
+    (0): Sequential(
+      (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (4): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (5): ReLU(inplace=True)
+      (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      (7): Dropout(p=0.25, inplace=False)
+    )
+    (1): Sequential(
+      (0): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (5): ReLU(inplace=True)
+      (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      (7): Dropout(p=0.25, inplace=False)
+    )
+    (2): Sequential(
+      (0): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (4): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (5): ReLU(inplace=True)
+      (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      (7): Dropout(p=0.3, inplace=False)
+    )
+    (3): Sequential(
+      (0): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+      (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      (4): Dropout(p=0.3, inplace=False)
+    )
+  )
+  (pool): AdaptiveAvgPool2d(output_size=(1, 1))
+  (classifier): Sequential(
+    (0): Linear(in_features=256, out_features=256, bias=True)
+    (1): ReLU(inplace=True)
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=256, out_features=1, bias=True)
+  )
+)
+Total parameters: 648,929
+Trainable parameters: 648,929
+Class weights: {"columnar": 0.7231030577576444, "equiaxed": 1.6205583756345177}
+Positive-class weight (equiaxed): 2.2411
+Train / val / test sizes: 1277 / 226 / 602
+Epoch 01/90 | lr 3.00e-04 | train loss 0.9864 | train acc 0.5223 | train macro F1 0.4507 | val loss 0.9283 | val acc 0.6372 | val macro F1 0.6033 | val weighted F1 0.6474
+Epoch 02/90 | lr 3.00e-04 | train loss 0.9520 | train acc 0.5341 | train macro F1 0.4473 | val loss 0.9113 | val acc 0.6327 | val macro F1 0.6096 | val weighted F1 0.6458
+Epoch 03/90 | lr 3.00e-04 | train loss 0.9224 | train acc 0.5693 | train macro F1 0.5073 | val loss 0.9254 | val acc 0.5354 | val macro F1 0.5343 | val weighted F1 0.5429
+Epoch 04/90 | lr 3.00e-04 | train loss 0.9228 | train acc 0.5850 | train macro F1 0.5322 | val loss 0.9030 | val acc 0.6150 | val macro F1 0.5976 | val weighted F1 0.6295
+Epoch 05/90 | lr 3.00e-04 | train loss 0.9255 | train acc 0.6038 | train macro F1 0.5438 | val loss 0.9503 | val acc 0.4558 | val macro F1 0.4527 | val weighted F1 0.4370
+Epoch 06/90 | lr 3.00e-04 | train loss 0.9166 | train acc 0.5912 | train macro F1 0.5403 | val loss 0.9277 | val acc 0.4956 | val macro F1 0.4941 | val weighted F1 0.4839
+Epoch 07/90 | lr 3.00e-04 | train loss 0.9017 | train acc 0.5912 | train macro F1 0.5353 | val loss 0.9963 | val acc 0.4513 | val macro F1 0.4470 | val weighted F1 0.4284
+Epoch 08/90 | lr 3.00e-04 | train loss 0.8826 | train acc 0.6390 | train macro F1 0.6051 | val loss 0.9410 | val acc 0.6947 | val macro F1 0.6522 | val weighted F1 0.6985
+Epoch 09/90 | lr 3.00e-04 | train loss 0.8632 | train acc 0.6374 | train macro F1 0.5958 | val loss 0.9267 | val acc 0.5265 | val macro F1 0.5265 | val weighted F1 0.5241
+Epoch 10/90 | lr 1.50e-04 | train loss 0.8937 | train acc 0.6202 | train macro F1 0.5951 | val loss 0.9576 | val acc 0.4513 | val macro F1 0.4440 | val weighted F1 0.4196
+Epoch 11/90 | lr 1.50e-04 | train loss 0.8642 | train acc 0.6492 | train macro F1 0.6137 | val loss 1.0946 | val acc 0.3805 | val macro F1 0.3513 | val weighted F1 0.2988
+Epoch 12/90 | lr 1.50e-04 | train loss 0.8697 | train acc 0.6390 | train macro F1 0.6161 | val loss 0.9077 | val acc 0.5487 | val macro F1 0.5486 | val weighted F1 0.5502
+Epoch 13/90 | lr 1.50e-04 | train loss 0.8664 | train acc 0.6210 | train macro F1 0.5865 | val loss 1.2949 | val acc 0.3097 | val macro F1 0.2365 | val weighted F1 0.1465
+Epoch 14/90 | lr 1.50e-04 | train loss 0.8558 | train acc 0.6664 | train macro F1 0.6342 | val loss 0.8784 | val acc 0.6327 | val macro F1 0.6257 | val weighted F1 0.6452
+Epoch 15/90 | lr 1.50e-04 | train loss 0.8491 | train acc 0.6453 | train macro F1 0.5965 | val loss 0.8921 | val acc 0.5929 | val macro F1 0.5909 | val weighted F1 0.6019
+Epoch 16/90 | lr 1.50e-04 | train loss 0.8306 | train acc 0.6539 | train macro F1 0.6406 | val loss 0.8968 | val acc 0.5796 | val macro F1 0.5726 | val weighted F1 0.5935
+Epoch 17/90 | lr 1.50e-04 | train loss 0.8275 | train acc 0.6711 | train macro F1 0.6455 | val loss 0.9999 | val acc 0.4425 | val macro F1 0.4338 | val weighted F1 0.4071
+Epoch 18/90 | lr 1.50e-04 | train loss 0.8335 | train acc 0.6570 | train macro F1 0.6342 | val loss 0.9395 | val acc 0.4912 | val macro F1 0.4895 | val weighted F1 0.4783
+Epoch 19/90 | lr 1.50e-04 | train loss 0.8301 | train acc 0.6578 | train macro F1 0.6367 | val loss 1.2591 | val acc 0.3451 | val macro F1 0.2990 | val weighted F1 0.2305
+Epoch 20/90 | lr 7.50e-05 | train loss 0.8343 | train acc 0.6609 | train macro F1 0.6502 | val loss 0.9213 | val acc 0.5398 | val macro F1 0.5397 | val weighted F1 0.5366
+Epoch 21/90 | lr 7.50e-05 | train loss 0.8245 | train acc 0.6656 | train macro F1 0.6414 | val loss 0.9470 | val acc 0.5265 | val macro F1 0.5261 | val weighted F1 0.5205
+Epoch 22/90 | lr 7.50e-05 | train loss 0.8165 | train acc 0.6633 | train macro F1 0.6381 | val loss 1.4437 | val acc 0.3274 | val macro F1 0.2688 | val weighted F1 0.1900
+Epoch 23/90 | lr 7.50e-05 | train loss 0.8058 | train acc 0.6844 | train macro F1 0.6652 | val loss 1.0578 | val acc 0.4071 | val macro F1 0.3859 | val weighted F1 0.3424
+Epoch 24/90 | lr 7.50e-05 | train loss 0.7897 | train acc 0.6875 | train macro F1 0.6612 | val loss 0.8742 | val acc 0.5841 | val macro F1 0.5839 | val weighted F1 0.5867
+Epoch 25/90 | lr 7.50e-05 | train loss 0.7937 | train acc 0.6954 | train macro F1 0.6691 | val loss 1.4090 | val acc 0.3186 | val macro F1 0.2551 | val weighted F1 0.1723
+Epoch 26/90 | lr 7.50e-05 | train loss 0.7964 | train acc 0.6829 | train macro F1 0.6602 | val loss 1.3551 | val acc 0.3407 | val macro F1 0.2889 | val weighted F1 0.2159
+Epoch 27/90 | lr 7.50e-05 | train loss 0.7717 | train acc 0.7063 | train macro F1 0.6851 | val loss 1.1360 | val acc 0.3894 | val macro F1 0.3580 | val weighted F1 0.3039
+Epoch 28/90 | lr 7.50e-05 | train loss 0.7758 | train acc 0.7040 | train macro F1 0.6931 | val loss 1.0136 | val acc 0.4292 | val macro F1 0.4117 | val weighted F1 0.3731
+Epoch 29/90 | lr 7.50e-05 | train loss 0.7621 | train acc 0.7040 | train macro F1 0.6923 | val loss 1.2091 | val acc 0.3850 | val macro F1 0.3520 | val weighted F1 0.2963
+Epoch 30/90 | lr 3.75e-05 | train loss 0.7864 | train acc 0.6891 | train macro F1 0.6712 | val loss 1.1178 | val acc 0.4425 | val macro F1 0.4263 | val weighted F1 0.3895
+Epoch 31/90 | lr 3.75e-05 | train loss 0.7682 | train acc 0.6930 | train macro F1 0.6790 | val loss 1.4572 | val acc 0.3407 | val macro F1 0.2889 | val weighted F1 0.2159
+Epoch 32/90 | lr 3.75e-05 | train loss 0.7439 | train acc 0.7267 | train macro F1 0.7172 | val loss 1.5767 | val acc 0.3230 | val macro F1 0.2620 | val weighted F1 0.1812
+Epoch 33/90 | lr 3.75e-05 | train loss 0.7210 | train acc 0.7181 | train macro F1 0.7046 | val loss 1.5544 | val acc 0.3407 | val macro F1 0.2889 | val weighted F1 0.2159
+Epoch 34/90 | lr 3.75e-05 | train loss 0.7177 | train acc 0.7439 | train macro F1 0.7316 | val loss 1.2748 | val acc 0.3982 | val macro F1 0.3698 | val weighted F1 0.3189
+Epoch 35/90 | lr 3.75e-05 | train loss 0.7502 | train acc 0.7079 | train macro F1 0.6901 | val loss 1.4786 | val acc 0.3584 | val macro F1 0.3148 | val weighted F1 0.2491
+Epoch 36/90 | lr 1.87e-05 | train loss 0.7351 | train acc 0.7228 | train macro F1 0.7127 | val loss 1.1429 | val acc 0.4159 | val macro F1 0.3950 | val weighted F1 0.3523
+Epoch 37/90 | lr 1.87e-05 | train loss 0.7117 | train acc 0.7306 | train macro F1 0.7167 | val loss 1.5046 | val acc 0.3407 | val macro F1 0.2889 | val weighted F1 0.2159
+Epoch 38/90 | lr 1.87e-05 | train loss 0.7200 | train acc 0.7345 | train macro F1 0.7253 | val loss 1.6400 | val acc 0.3230 | val macro F1 0.2620 | val weighted F1 0.1812

@@ -1,0 +1,10 @@
+{
+  "majority_vote_label": "equiaxed",
+  "mean_equiaxed_probability": 0.6386312246322632,
+  "note": "Patch-level aggregation over the Dr. Lu source image, because the classifier operates on 256x256 grain patches.",
+  "num_patches": 602,
+  "predicted_columnar_fraction": 0.30066445182724255,
+  "source_accuracy": 0.6411960132890365,
+  "source_image": "Dr.Lu_Grain_Structure_Image",
+  "true_columnar_fraction": 0.6196013289036545
+}
