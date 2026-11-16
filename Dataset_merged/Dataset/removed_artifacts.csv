@@ -1,0 +1,6 @@
+reason,source_image,grain_id,area_px,equivalent_diameter_px,major_axis_px,minor_axis_px,aspect_ratio,orientation_deg,centroid_row,centroid_col,bbox_minr,bbox_minc,bbox_maxr,bbox_maxc,mean_color_r,mean_color_g,mean_color_b,morphology_label,confidence_tier,group,feret_aspect_ratio,touches_border,ambiguous_weight,ambiguous,too_small,crop_w_px,crop_h_px
+thin_or_hollow_bbox,01a2_05_AreaFiltered_IPF.png,2,7374.0,96.9,2487.38,507.64,4.9,82.06,74.6,1971.3,2,812,602,2682,134.7,134.7,134.7,columnar,unverified,gabbro_gigoldur,3.117,0,1.0,False,False,1870,600
+giant_merged_region,01a2_05_AreaFiltered_IPF.png,47,500964.0,798.65,1246.8,613.9,2.031,-84.42,733.5,2056.0,317,1475,1042,2677,238.0,211.0,166.0,columnar,unverified,gabbro_gigoldur,1.658,0,0.5,True,False,1202,725
+thin_or_hollow_bbox,024_05_AreaFiltered_IPF.png,1,691.0,29.66,249.5,30.04,8.305,-86.02,6.3,84.0,2,2,44,198,132.8,132.8,132.8,columnar,unverified,gabbro_gigoldur,4.667,0,1.0,False,False,196,42
+thin_or_hollow_bbox,024_05_AreaFiltered_IPF.png,298,2338.0,54.56,646.09,310.45,2.081,-34.87,1160.5,3036.2,848,2761,1279,3119,132.9,132.9,132.9,columnar,unverified,gabbro_gigoldur,1.204,0,0.5,True,False,358,431
+thin_or_hollow_bbox,4N3C_05_AreaFiltered_IPF.png,1,1582.0,44.88,438.32,218.29,2.008,-41.35,75.1,65.0,2,2,281,297,133.9,133.9,133.9,columnar,unverified,gabbro_gigoldur,1.057,0,0.5,True,False,295,279

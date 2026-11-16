@@ -8,12 +8,12 @@ from typing import Iterable
 import numpy as np
 import torch
 from PIL import Image
+from PIL import ImageOps
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 from torchvision import transforms
 
-from morphology_cnn.common import DatasetLayoutError, load_manifest, resolve_dataset_layout
+from morphology_cnn.common import CLASS_NAMES, LABEL_TO_INT, DatasetLayoutError, load_manifest, resolve_dataset_layout
 
-CLASS_NAMES = ["columnar", "equiaxed"]
 IMAGE_SIZE = 256
 POSITIVE_CLASS = "equiaxed"
 
@@ -29,13 +29,13 @@ class SplitAssets:
 
 class GrainPatchDataset(Dataset):
     def __init__(self, dataset_root: str | Path, manifest_path: str | Path, transform=None):
-        self.dataset_root = Path(dataset_root).expanduser().resolve()
+        self.dataset_root = resolve_dataset_layout(dataset_root).dataset_root
         self.manifest_path = Path(manifest_path).expanduser().resolve()
         self.rows = load_manifest(self.manifest_path)
         if not self.rows:
             raise DatasetLayoutError(f"Manifest is empty: {self.manifest_path}")
         self.transform = transform
-        self.label_to_int = {"columnar": 0, "equiaxed": 1}
+        self.label_to_int = LABEL_TO_INT
 
     def __len__(self) -> int:
         return len(self.rows)
@@ -52,11 +52,13 @@ class GrainPatchDataset(Dataset):
         return image, label, row
 
 
-def build_transforms(train: bool) -> transforms.Compose:
+def build_transforms(train: bool, input_mode: str = "rgb", image_size: int = IMAGE_SIZE) -> transforms.Compose:
+    color_transform = transforms.Grayscale(num_output_channels=3) if input_mode == "shape" else transforms.Lambda(lambda image: image)
     if train:
         return transforms.Compose(
             [
-                transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+                transforms.Lambda(lambda image: ImageOps.pad(image, (image_size, image_size), method=Image.Resampling.BILINEAR, color=0)),
+                color_transform,
                 transforms.RandomRotation(degrees=(0, 360)),
                 transforms.RandomHorizontalFlip(p=0.5),
                 transforms.RandomVerticalFlip(p=0.5),
@@ -67,7 +69,8 @@ def build_transforms(train: bool) -> transforms.Compose:
 
     return transforms.Compose(
         [
-            transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+            transforms.Lambda(lambda image: ImageOps.pad(image, (image_size, image_size), method=Image.Resampling.BILINEAR, color=0)),
+            color_transform,
             transforms.ToTensor(),
         ]
     )
@@ -95,7 +98,6 @@ def compute_class_stats(rows: Iterable[dict[str, str]]) -> tuple[dict[str, float
 
 
 def make_weighted_sampler(rows: list[dict[str, str]]) -> WeightedRandomSampler:
-    class_to_idx = {"columnar": 0, "equiaxed": 1}
     counts = Counter(row["label"] for row in rows)
     sample_weights = [1.0 / counts[row["label"]] for row in rows]
     return WeightedRandomSampler(
@@ -123,17 +125,26 @@ def build_dataloaders(
     split_dir: str | Path,
     batch_size: int = 32,
     num_workers: int = 0,
+    imbalance_correction: str = "sampler",
+    input_mode: str = "rgb",
+    image_size: int = IMAGE_SIZE,
 ):
     layout = resolve_dataset_layout(dataset_root)
     assets = build_assets(layout.dataset_root, split_dir)
 
-    train_dataset = GrainPatchDataset(layout.dataset_root, Path(split_dir) / "train_manifest.csv", transform=build_transforms(True))
-    val_dataset = GrainPatchDataset(layout.dataset_root, Path(split_dir) / "val_manifest.csv", transform=build_transforms(False))
-    test_dataset = GrainPatchDataset(layout.dataset_root, Path(split_dir) / "test_manifest.csv", transform=build_transforms(False))
+    train_dataset = GrainPatchDataset(layout.dataset_root, Path(split_dir) / "train_manifest.csv", transform=build_transforms(True, input_mode, image_size))
+    val_dataset = GrainPatchDataset(layout.dataset_root, Path(split_dir) / "val_manifest.csv", transform=build_transforms(False, input_mode, image_size))
+    test_dataset = GrainPatchDataset(layout.dataset_root, Path(split_dir) / "test_manifest.csv", transform=build_transforms(False, input_mode, image_size))
 
-    sampler = make_weighted_sampler(assets.train_rows)
+    sampler = make_weighted_sampler(assets.train_rows) if imbalance_correction == "sampler" else None
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, sampler=sampler, num_workers=num_workers)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        sampler=sampler,
+        shuffle=sampler is None,
+        num_workers=num_workers,
+    )
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 

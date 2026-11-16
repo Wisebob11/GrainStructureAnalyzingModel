@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score, precision_recall_fscore_support
 
-CLASS_NAMES = ["columnar", "equiaxed"]
+from morphology_cnn.common import CLASS_NAMES
 
 
 def _conv_block(in_channels: int, out_channels: int, convs: int, dropout: float) -> nn.Sequential:
@@ -128,8 +128,8 @@ class GrainCNNExperiment:
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = (model or build_model()).to(self.device)
 
-    def get_model_summary(self) -> str:
-        return get_model_summary(self.model)
+    def get_model_summary(self, input_size: int = 256) -> str:
+        return get_model_summary(self.model, input_shape=(1, 3, input_size, input_size))
 
     def train(
         self,
@@ -144,9 +144,13 @@ class GrainCNNExperiment:
         factor: float = 0.5,
         checkpoint_path: str | Path | None = None,
         history_path: str | Path | None = None,
+        input_size: int = 256,
         log_fn=print,
     ) -> list[dict[str, float]]:
-        criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([pos_weight], device=self.device))
+        criterion = nn.BCEWithLogitsLoss(
+            pos_weight=torch.tensor([pos_weight], device=self.device),
+            reduction="none",
+        )
         optimizer = torch.optim.AdamW(self.model.parameters(), lr=lr, weight_decay=1e-4)
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer,
@@ -167,13 +171,19 @@ class GrainCNNExperiment:
             train_targets: list[int] = []
             train_probs: list[float] = []
 
-            for images, targets, _meta in train_loader:
+            for images, targets, meta in train_loader:
                 images = images.to(self.device)
                 targets = targets.to(self.device)
 
                 optimizer.zero_grad(set_to_none=True)
                 logits = self.model(images)
-                loss = criterion(logits, targets)
+                sample_loss = criterion(logits, targets)
+                ambiguous_weights = torch.as_tensor(
+                    [float(meta.get("ambiguous_weight", ["1.0"] * len(targets))[index]) for index in range(len(targets))],
+                    device=self.device,
+                    dtype=sample_loss.dtype,
+                )
+                loss = (sample_loss * ambiguous_weights).mean()
                 loss.backward()
                 optimizer.step()
 
@@ -215,7 +225,7 @@ class GrainCNNExperiment:
                 best_state = {
                     "model_state_dict": self.model.state_dict(),
                     "class_names": CLASS_NAMES,
-                    "input_shape": [3, 256, 256],
+                    "input_shape": [3, input_size, input_size],
                     "best_epoch": best_epoch,
                     "best_val_loss": best_val_loss,
                 }
@@ -257,7 +267,7 @@ class GrainCNNExperiment:
             targets = targets.to(self.device)
             logits = self.model(images)
             loss = criterion(logits, targets)
-            total_loss += loss.item() * images.size(0)
+            total_loss += loss.mean().item() * images.size(0)
             y_true.extend(targets.detach().cpu().numpy().astype(int).tolist())
             y_prob.extend(torch.sigmoid(logits).detach().cpu().numpy().tolist())
 

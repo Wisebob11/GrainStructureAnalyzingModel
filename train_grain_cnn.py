@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from grain_cnn_model import CLASS_NAMES, GrainCNNExperiment, count_parameters, find_best_threshold
+from grain_cnn_model import GrainCNNExperiment, count_parameters, find_best_threshold
 from grain_data_loader import build_dataloaders
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train a custom CNN for columnar vs. equiaxed grain classification.")
-    parser.add_argument("--dataset-root", type=str, default="Dataset")
+    parser.add_argument("--dataset-root", type=str, default="Dataset_merged")
     parser.add_argument("--split-dir", type=str, default="artifacts/splits")
     parser.add_argument("--output-dir", type=str, default="artifacts/grain_cnn_run")
     parser.add_argument("--epochs", type=int, default=60)
@@ -25,6 +25,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--reduce-lr-patience", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--input-mode", choices=("rgb", "shape"), default="rgb", help="Use RGB or grayscale shape-only input.")
+    parser.add_argument("--image-size", type=int, choices=(64, 128, 256), default=256)
+    parser.add_argument(
+        "--imbalance-correction",
+        choices=("sampler", "loss", "none"),
+        default="sampler",
+        help="Apply class balancing once via a sampler, weighted loss, or not at all.",
+    )
     return parser.parse_args()
 
 
@@ -88,6 +96,9 @@ def main() -> None:
         dataset_root=args.dataset_root,
         split_dir=args.split_dir,
         batch_size=args.batch_size,
+        imbalance_correction=args.imbalance_correction,
+        input_mode=args.input_mode,
+        image_size=args.image_size,
     )
 
     experiment = GrainCNNExperiment()
@@ -99,11 +110,15 @@ def main() -> None:
             log_file.write(message + "\n")
             log_file.flush()
 
-        log(experiment.get_model_summary())
+        log(experiment.get_model_summary(args.image_size))
         log(f"Total parameters: {params['total']:,}")
         log(f"Trainable parameters: {params['trainable']:,}")
         log(f"Class weights: {json.dumps(assets.class_weights, sort_keys=True)}")
-        log(f"Positive-class weight (equiaxed): {assets.pos_weight:.4f}")
+        pos_weight = assets.pos_weight if args.imbalance_correction == "loss" else 1.0
+        log(f"Imbalance correction: {args.imbalance_correction}")
+        log(f"Input mode: {args.input_mode}")
+        log(f"Image size: {args.image_size}x{args.image_size}")
+        log(f"Positive-class weight (equiaxed): {pos_weight:.4f}")
         log(f"Train / val / test sizes: {len(train_loader.dataset)} / {len(val_loader.dataset)} / {len(test_loader.dataset)}")
 
         history = experiment.train(
@@ -111,11 +126,12 @@ def main() -> None:
             val_loader,
             epochs=args.epochs,
             lr=args.learning_rate,
-            pos_weight=assets.pos_weight,
+            pos_weight=pos_weight,
             patience=args.patience,
             reduce_lr_patience=args.reduce_lr_patience,
             checkpoint_path=output_dir / "best_model.pt",
-            history_path=output_dir / "history.csv",
+            history_path=None,
+            input_size=args.image_size,
             log_fn=log,
         )
 
@@ -132,6 +148,14 @@ def main() -> None:
         test_metrics = experiment.evaluate(test_loader, threshold=decision_threshold)
         best_history_row = min(history, key=lambda row: row["val_loss"]) if history else {"epoch": 0, "val_loss": float("nan")}
         metrics_payload = {
+            "dataset_root": str(Path(args.dataset_root)),
+            "split_dir": str(Path(args.split_dir)),
+            "input_mode": args.input_mode,
+            "image_size": args.image_size,
+            "imbalance_correction": args.imbalance_correction,
+            "seed": args.seed,
+            "epochs_requested": args.epochs,
+            "epochs_completed": len(history),
             "best_epoch": int(best_history_row["epoch"]),
             "best_val_loss": float(best_history_row["val_loss"]),
             "decision_threshold": float(decision_threshold),

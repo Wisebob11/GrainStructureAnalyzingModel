@@ -5,44 +5,66 @@
       "equiaxed": 229
     },
     "train": {
-      "columnar": 883,
-      "equiaxed": 394
+      "columnar": 570,
+      "equiaxed": 986
     },
     "val": {
-      "columnar": 156,
-      "equiaxed": 70
+      "columnar": 1039,
+      "equiaxed": 464
     }
   },
   "counts": {
-    "all": 2105,
+    "all": 3661,
     "test": 602,
-    "train": 1277,
-    "val": 226
+    "train": 1556,
+    "val": 1503
   },
-  "dataset_root": "/Users/sankeerth/Documents/GitHub/GrainStructureAnalyzingModel/Dataset",
-  "image_root": "/Users/sankeerth/Documents/GitHub/GrainStructureAnalyzingModel/Dataset/grain_crops",
-  "metadata_csv": "/Users/sankeerth/Documents/GitHub/GrainStructureAnalyzingModel/Dataset/all_grains.csv",
+  "dataset_root": "Dataset_merged/Dataset",
+  "image_root": "Dataset_merged/Dataset/grain_crops",
+  "metadata_csv": "Dataset_merged/Dataset/all_grains.csv",
   "seed": 42,
   "source_counts": {
     "test": {
       "Dr.Lu_Grain_Structure_Image": 602
     },
     "train": {
-      "Area_1_1_IPF_A1.tiff": 1277
+      "01a2_05_AreaFiltered_IPF.png": 341,
+      "01a6_05_AreaFiltered_IPF.png": 315,
+      "024_05_AreaFiltered_IPF.png": 393,
+      "4N3C_05_AreaFiltered_IPF.png": 507
     },
     "val": {
-      "Area_1_1_IPF_A1.tiff": 226
+      "Area_1_1_IPF_A1.tiff": 1503
     }
   },
   "source_prefixes": {
+    "01a2_05_AreaFiltered_IPF.png": "01a2_05_AreaFiltered",
+    "01a6_05_AreaFiltered_IPF.png": "01a6_05_AreaFiltered",
+    "024_05_AreaFiltered_IPF.png": "024_05_AreaFiltered",
+    "4N3C_05_AreaFiltered_IPF.png": "4N3C_05_AreaFiltered",
     "Area_1_1_IPF_A1.tiff": "Area_1_1",
     "Dr.Lu_Grain_Structure_Image": "DrLu"
   },
+  "test_groups": [
+    "Dr.Lu_Grain_Structure_Image"
+  ],
   "test_sources": [
     "Dr.Lu_Grain_Structure_Image"
   ],
+  "train_groups": [
+    "gabbro_gigoldur"
+  ],
   "train_sources": [
+    "01a2_05_AreaFiltered_IPF.png",
+    "01a6_05_AreaFiltered_IPF.png",
+    "024_05_AreaFiltered_IPF.png",
+    "4N3C_05_AreaFiltered_IPF.png"
+  ],
+  "val_fraction": 0.15,
+  "val_groups": [
     "Area_1_1_IPF_A1.tiff"
   ],
-  "val_fraction": 0.15
+  "val_sources": [
+    "Area_1_1_IPF_A1.tiff"
+  ]
 }

@@ -1,0 +1,6 @@
+.DS_Store
+.mplconfig/
+__pycache__/
+*.py[cod]
+.venv/
+artifacts/**/best_model.pt

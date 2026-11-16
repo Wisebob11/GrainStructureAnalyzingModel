@@ -8,6 +8,10 @@ from pathlib import Path
 from typing import Iterable
 
 ALLOWED_IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp"}
+CLASS_NAMES = ["columnar", "equiaxed"]
+LABEL_TO_INT = {label: index for index, label in enumerate(CLASS_NAMES)}
+AMBIGUOUS_MIN_AR = 1.7
+AMBIGUOUS_MAX_AR = 2.3
 
 
 class DatasetLayoutError(FileNotFoundError):
@@ -27,6 +31,9 @@ def resolve_dataset_layout(dataset_root: str | Path) -> DatasetLayout:
         raise DatasetLayoutError(
             f"Dataset root not found: {root}. Check the folder name/location."
         )
+
+    if not (root / "all_grains.csv").exists() and (root / "Dataset" / "all_grains.csv").exists():
+        root = root / "Dataset"
 
     metadata_csv = root / "all_grains.csv"
     if not metadata_csv.exists():
@@ -59,11 +66,16 @@ def read_csv_rows(csv_path: str | Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
+def row_group(row: dict[str, str]) -> str:
+    """Return the leakage-prevention group, defaulting legacy data to its source."""
+    return row.get("group", "").strip() or row["source_image"]
+
+
 def save_csv_rows(csv_path: str | Path, rows: Iterable[dict[str, object]], fieldnames: list[str]) -> None:
     csv_path = Path(csv_path)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     with csv_path.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow(row)
